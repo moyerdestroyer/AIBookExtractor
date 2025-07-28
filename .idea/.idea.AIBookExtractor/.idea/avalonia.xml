@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="AIBookExtractor/App.axaml" value="AIBookExtractor/AIBookExtractor.csproj" />
+        <entry key="AIBookExtractor/MainWindow.axaml" value="AIBookExtractor/AIBookExtractor.csproj" />
+        <entry key="AIBookExtractor/Views/LoadPDF.axaml" value="AIBookExtractor/AIBookExtractor.csproj" />
+        <entry key="AIBookExtractor/Views/ProgressDialog.axaml" value="AIBookExtractor/AIBookExtractor.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

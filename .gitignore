@@ -1,0 +1,51 @@
+## .NET Core
+bin/
+obj/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+.vs/
+.vscode/
+*.swp
+*.*~
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+msbuild.log
+msbuild.err
+msbuild.wrn
+
+## Visual Studio files
+*.VisualState.xml
+TestResult.xml
+nunit-*.xml
+
+## Rider
+.idea/
+*.sln.iml
+
+## User-specific files
+*.rsuser
+*.dtbcache.v2
+*.dtbcache
+
+## Avalonia specific
+# Add any Avalonia-specific files to ignore
+
+## OS-specific files
+.DS_Store
+Thumbs.db
