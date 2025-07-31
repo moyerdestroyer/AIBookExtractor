@@ -58,7 +58,7 @@ namespace AIBookExtractor
             _cancellationTokenSource.Dispose();
         }
 
-        public ProgressBar ProgressBarControl => this.FindControl<ProgressBar>("ProgressBar"); // Renamed to avoid conflict
+        public ProgressBar? ProgressBarControl => this.FindControl<ProgressBar>("ProgressBar"); // Renamed to avoid conflict
 
         private void OnProgressValueChanged(double newValue)
         {

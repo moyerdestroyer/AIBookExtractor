@@ -13,10 +13,11 @@ using System.Linq;
 using System.Threading;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Platform.Storage;
 
 namespace AIBookExtractor {
     public partial class MainWindow : Window {
-        private PdfFile _currentPdf;
+        private PdfFile? _currentPdf;
         private Button? _selectedThumbnailButton;
 
         public MainWindow() {
@@ -31,17 +32,18 @@ namespace AIBookExtractor {
             SendToAiButton.IsEnabled = false;
 
             // Show file selection dialog
-            var dialog = new OpenFileDialog {
+            var dialog = new FilePickerOpenOptions {
                 Title = "Select PDF File",
-                Filters = new() {
-                    new FileDialogFilter { Name = "PDF Files", Extensions = { "pdf" } },
-                    new FileDialogFilter { Name = "All Files", Extensions = { "*" } }
+                FileTypeFilter = new[] {
+                    new FilePickerFileType("PDF Files") { Patterns = new[] { "*.pdf" } },
+                    new FilePickerFileType("All Files") { Patterns = new[] { "*" } }
                 },
                 AllowMultiple = false
             };
 
-            var result = await dialog.ShowAsync(this);
-            if (result == null || result.Length == 0) {
+            var result = await StorageProvider.OpenFilePickerAsync(dialog);
+            if (!result.Any())
+            {
                 // Re-enable buttons
                 LoadPdfButton.IsEnabled = true;
                 SaveTextButton.IsEnabled = true;
@@ -49,7 +51,7 @@ namespace AIBookExtractor {
                 return; // User canceled the dialog
             }
 
-            string filePath = result[0];
+            string filePath = result[0].Path.LocalPath;
 
             // Show progress dialog
             var progressDialog = new ProgressDialog();
@@ -216,7 +218,7 @@ namespace AIBookExtractor {
 
             try {
                 var selectedPage = _currentPdf.Pages.FirstOrDefault(p =>
-                    p.PageNumber.ToString() == PageNumberHeader.Text.Replace("Page ", ""));
+                    PageNumberHeader.Text != null && p.PageNumber.ToString() == PageNumberHeader.Text.Replace("Page ", ""));
                 if (selectedPage == null) {
                     await new MessageBox { Title = "Error", Message = "No page selected." }.ShowDialog(this);
                     return;
@@ -238,18 +240,18 @@ namespace AIBookExtractor {
 
         private void ExtractedTextBox_TextChanged(object? sender, EventArgs e) {
             if (_selectedThumbnailButton?.Tag is PageModel currentPage) {
-                currentPage.TextContent = ExtractedTextBox.Text;
+                if (ExtractedTextBox.Text != null) currentPage.TextContent = ExtractedTextBox.Text;
             }
         }
     }
 
     public class MessageBox : Window {
-        public string Title { get; set; }
-        public string Message { get; set; }
+        public new string? Title { get; set; }
+        public string? Message { get; set; }
 
         public MessageBox() {
-            Width = 300;
-            Height = 150;
+            Width = 200;
+            Height = 100;
             CanResize = false;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
@@ -264,7 +266,7 @@ namespace AIBookExtractor {
             Content = stackPanel;
         }
 
-        public Task ShowDialog(Window owner) {
+        public new Task ShowDialog(Window owner) {
             return ShowDialog<object>(owner);
         }
     }

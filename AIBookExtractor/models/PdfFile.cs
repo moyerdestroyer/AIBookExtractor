@@ -15,7 +15,7 @@ namespace AIBookExtractor.Models {
         public List<PageModel> Pages { get; }
 
         public PdfFile(string filePath, CancellationToken cancellationToken = default,
-            Action<double> progressCallback = null) {
+            Action<double>? progressCallback = null) {
             Pages = new List<PageModel>();
             FilePath = string.IsNullOrEmpty(filePath) ? Path.Combine("assets", "sample.png") : filePath;
 
@@ -29,14 +29,14 @@ namespace AIBookExtractor.Models {
                         ProcessedByAI = false
                     });
                     Console.WriteLine($"Loaded sample page {i}");
-                    progressCallback?.Invoke(i * 20.0);
+                    InvokeProgressCallback(i * 20.0, progressCallback);
                 }
 
                 Console.WriteLine("Loaded 5 sample pages.");
             }
             else {
                 // Set output directory
-                OutputPath = Path.Combine(Path.GetDirectoryName(FilePath),
+                OutputPath = Path.Combine(Path.GetDirectoryName(FilePath) ?? throw new InvalidOperationException(),
                     Path.GetFileNameWithoutExtension(FilePath) + "_AIBE");
                 if (!Directory.Exists(OutputPath)) {
                     Directory.CreateDirectory(OutputPath);
@@ -293,6 +293,19 @@ namespace AIBookExtractor.Models {
 
         public string GetOutputPath() {
             return OutputPath;
+        }
+
+        private void InvokeProgressCallback(double progress, Action<double> callback)
+        {
+            try
+            {
+                callback?.Invoke(progress);
+            }
+            catch (Exception ex)
+            {
+                // Log the error or handle appropriately
+                Console.WriteLine($"Error in progress callback: {ex.Message}");
+            }
         }
     }
 

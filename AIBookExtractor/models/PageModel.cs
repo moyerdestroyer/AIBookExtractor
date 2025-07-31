@@ -9,8 +9,8 @@ using Avalonia.Media.Imaging;
 namespace AIBookExtractor.Models {
     public class PageModel {
         public int PageNumber { get; set; }
-        public Bitmap PageImage { get; set; }
-        public string TextContent { get; set; }
+        public required Bitmap PageImage { get; set; }
+        public required string TextContent { get; set; }
         public bool ProcessedByAI { get; set; }
     }
 }
