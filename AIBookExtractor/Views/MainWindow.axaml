@@ -1,0 +1,162 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:AIBookExtractor.Views"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="AIBookExtractor.Views.MainWindow"
+        Title="AIBookExtractor">
+    
+    <TabControl Margin="10">
+        <!-- Main Tab -->
+        <TabItem Header="Main">
+            <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="300,*">
+                <!-- Top row: Load PDF and Save Text buttons -->
+                <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="5">
+                    <Button x:Name="LoadPdfButton" 
+                            Content="Load PDF" 
+                            Click="LoadPdfButton_Click"
+                            IsEnabled="{ReflectionBinding !MainTabViewModel.IsLoading}"/>
+                    <Button x:Name="SaveTextButton" 
+                            Content="Save Text" 
+                            Click="SaveTextButton_Click"
+                            IsEnabled="{ReflectionBinding MainTabViewModel.CanSave}"/>
+                </StackPanel>
+
+                <!-- Left panel: Scrollable PDF page images -->
+                <ScrollViewer Grid.Row="1" Grid.Column="0" VerticalScrollBarVisibility="Auto">
+                    <StackPanel x:Name="PdfPagesPanel">
+                        <!-- Dynamically add Image controls with page number labels -->
+                        <TextBlock Text="PDF page thumbnails will appear here..." 
+                                   Foreground="Gray"
+                                   IsVisible="{ReflectionBinding !MainTabViewModel.Pages.Count}"/>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- Right panel: Header with page number and Send to AI button, then TextBox -->
+                <Grid Grid.Row="1" Grid.Column="1" RowDefinitions="Auto,*">
+                    <!-- Header with page number and Send to AI button -->
+                    <DockPanel Grid.Row="0" Margin="5">
+                        <TextBlock x:Name="PageNumberHeader" 
+                                   Text="{ReflectionBinding MainTabViewModel.PageNumberHeader}" 
+                                   FontSize="16" 
+                                   FontWeight="Bold" 
+                                   VerticalAlignment="Center"/>
+                        <Button x:Name="SendToAiButton" 
+                                Content="Send Page to AI" 
+                                HorizontalAlignment="Right" 
+                                DockPanel.Dock="Right" 
+                                Click="SendToAiButton_Click"
+                                IsEnabled="{ReflectionBinding MainTabViewModel.CanSendToAi}"/>
+                    </DockPanel>
+                    <!-- TextBox for extracted text -->
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <TextBox x:Name="ExtractedTextBox" 
+                                 Text="{ReflectionBinding MainTabViewModel.ExtractedText}"
+                                 AcceptsReturn="True" 
+                                 AcceptsTab="True" 
+                                 TextWrapping="Wrap" 
+                                 IsReadOnly="False"/>
+                    </ScrollViewer>
+                </Grid>
+            </Grid>
+        </TabItem>
+
+        <!-- Settings Tab -->
+        <TabItem Header="Settings">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="10" MaxWidth="800" HorizontalAlignment="Left">
+                    <TextBlock Text="AI Service" FontWeight="Bold"/>
+                    <ComboBox x:Name="ServiceSelector" 
+                              PlaceholderText="Select AI service" 
+                              Width="800"
+                              Margin="0,5,0,0"
+                              ItemsSource="{ReflectionBinding SettingsTabViewModel.AvailableServices}"
+                              SelectedItem="{ReflectionBinding SettingsTabViewModel.SelectedService}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{ReflectionBinding DisplayName}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    
+                    <TextBlock Text="Model" FontWeight="Bold" Margin="0,15,0,0"/>
+                    <ComboBox x:Name="ModelSelector" 
+                              PlaceholderText="Select model" 
+                              Width="800"
+                              Margin="0,5,0,0"
+                              ItemsSource="{ReflectionBinding SettingsTabViewModel.AvailableModels}"
+                              SelectedItem="{ReflectionBinding SettingsTabViewModel.SelectedModel}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="{ReflectionBinding DisplayName}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{ReflectionBinding Description}" 
+                                               FontSize="11" 
+                                               Foreground="Gray"
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    
+                    <StackPanel IsVisible="{ReflectionBinding SettingsTabViewModel.IsApiKeyRequired}">
+                        <TextBlock Text="API Key" FontWeight="Bold" Margin="0,15,0,0"/>
+                        <TextBlock Text="{ReflectionBinding SettingsTabViewModel.ApiKeyHelpText}" 
+                                   FontSize="11" 
+                                   Foreground="Gray"
+                                   Margin="0,2,0,5"/>
+                        <TextBox x:Name="ApiKeyInput" 
+                                 Watermark="Enter API key" 
+                                 Width="800"
+                                 PasswordChar="•"
+                                 Text="{ReflectionBinding SettingsTabViewModel.ApiKey}" />
+                    </StackPanel>
+                    
+                    <TextBlock Text="Text Processing Prompt" FontWeight="Bold" Margin="0,15,0,0"/>
+                    <TextBlock Text="This prompt will be used to process each page of text" 
+                               FontSize="11" 
+                               Foreground="Gray"
+                               Margin="0,2,0,5"/>
+                    <TextBox x:Name="PromptInput" 
+                             Watermark="Enter prompt for AI" 
+                             AcceptsReturn="True" 
+                             Height="200"
+                             Width="800"
+                             TextWrapping="Wrap"
+                             Text="{ReflectionBinding SettingsTabViewModel.Prompt}"/>
+                             
+                    <!-- Model Information Panel -->
+                    <Border Background="#F0F0F0" 
+                            CornerRadius="5" 
+                            Padding="10" 
+                            Margin="0,15,0,0"
+                            Width="800"
+                            IsVisible="{ReflectionBinding SettingsTabViewModel.SelectedModel, Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <StackPanel>
+                            <TextBlock Text="Model Information" FontWeight="Bold"/>
+                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto" Margin="0,5,0,0">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Max Tokens:" Margin="0,2"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" 
+                                           Text="{ReflectionBinding SettingsTabViewModel.SelectedModel.MaxTokens}" 
+                                           Margin="10,2,0,2"/>
+                                
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Cost per 1k tokens:" Margin="0,2"
+                                           IsVisible="{ReflectionBinding SettingsTabViewModel.SelectedModel.CostPer1kTokens, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" 
+                                           Margin="10,2,0,2"
+                                           IsVisible="{ReflectionBinding SettingsTabViewModel.SelectedModel.CostPer1kTokens, Converter={x:Static ObjectConverters.IsNotNull}}">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="${0:F3}">
+                                            <ReflectionBinding Path="SettingsTabViewModel.SelectedModel.CostPer1kTokens" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+    </TabControl>
+</Window>

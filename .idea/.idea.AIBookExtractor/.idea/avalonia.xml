@@ -5,7 +5,10 @@
       <map>
         <entry key="AIBookExtractor/App.axaml" value="AIBookExtractor/AIBookExtractor.csproj" />
         <entry key="AIBookExtractor/MainWindow.axaml" value="AIBookExtractor/AIBookExtractor.csproj" />
+        <entry key="AIBookExtractor/Views/Controls/MessageBox.axaml" value="AIBookExtractor/AIBookExtractor.csproj" />
+        <entry key="AIBookExtractor/Views/Dialogs/ProgressDialog.axaml" value="AIBookExtractor/AIBookExtractor.csproj" />
         <entry key="AIBookExtractor/Views/LoadPDF.axaml" value="AIBookExtractor/AIBookExtractor.csproj" />
+        <entry key="AIBookExtractor/Views/MainWindow.axaml" value="AIBookExtractor/AIBookExtractor.csproj" />
         <entry key="AIBookExtractor/Views/ProgressDialog.axaml" value="AIBookExtractor/AIBookExtractor.csproj" />
       </map>
     </option>

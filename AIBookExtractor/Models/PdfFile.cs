@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using AIBookExtractor.models;
 using Avalonia.Media.Imaging;
+using Avalonia.Threading;
 using PDFtoImage;
 using SkiaSharp;
-using System.Threading;
-using Avalonia.Threading;
 
 namespace AIBookExtractor.Models {
     public class PdfFile {
@@ -26,7 +27,7 @@ namespace AIBookExtractor.Models {
                         PageNumber = i,
                         TextContent = $"Sample text for page {i}",
                         PageImage = new Bitmap(FilePath),
-                        ProcessedByAI = false
+                        ProcessedByAi = false
                     });
                     Console.WriteLine($"Loaded sample page {i}");
                     InvokeProgressCallback(i * 20.0, progressCallback);
@@ -165,7 +166,7 @@ namespace AIBookExtractor.Models {
                     var pageModel = new PageModel {
                         PageNumber = pageNum,
                         PageImage = new Bitmap(imageFile),
-                        ProcessedByAI = pageData.ContainsKey(pageNum) && pageData[pageNum].ProcessedByAI,
+                        ProcessedByAi = pageData.ContainsKey(pageNum) && pageData[pageNum].ProcessedByAI,
                         TextContent = pageData.ContainsKey(pageNum) && !string.IsNullOrEmpty(pageData[pageNum].Text)
                             ? pageData[pageNum].Text
                             : $"No text content loaded for page {pageNum}"
@@ -174,7 +175,7 @@ namespace AIBookExtractor.Models {
                     Pages.Add(pageModel);
                     anyPageLoaded = true;
                     Console.WriteLine(
-                        $"Loaded page {pageNum}: Image={imageFile}, Text={(pageModel.TextContent.Length > 50 ? pageModel.TextContent.Substring(0, 50) + "..." : pageModel.TextContent)}, ProcessedByAI={pageModel.ProcessedByAI}");
+                        $"Loaded page {pageNum}: Image={imageFile}, Text={(pageModel.TextContent.Length > 50 ? pageModel.TextContent.Substring(0, 50) + "..." : pageModel.TextContent)}, ProcessedByAI={pageModel.ProcessedByAi}");
 
                     // Update progress on UI thread
                     processed++;
@@ -213,7 +214,7 @@ namespace AIBookExtractor.Models {
                             PageNumber = page + 1,
                             TextContent = $"Text for Page {page + 1}",
                             PageImage = new Bitmap(outputImagePath),
-                            ProcessedByAI = false
+                            ProcessedByAi = false
                         });
                         double progressPercentage = ((page + 1) / (double)totalPages) * 100;
                         int roundedPercentage = (int)Math.Round(progressPercentage);
@@ -243,7 +244,7 @@ namespace AIBookExtractor.Models {
                                 PageNumber = page + 1,
                                 TextContent = $"Text for Page {page + 1}",
                                 PageImage = new Bitmap(outputImagePath),
-                                ProcessedByAI = false
+                                ProcessedByAi = false
                             });
                         }
 
@@ -284,7 +285,7 @@ namespace AIBookExtractor.Models {
                 writer.WriteLine();
 
                 foreach (var page in Pages) {
-                    writer.WriteLine($"--- Page {page.PageNumber} | Processed by AI: {page.ProcessedByAI} ---");
+                    writer.WriteLine($"--- Page {page.PageNumber} | Processed by AI: {page.ProcessedByAi} ---");
                     writer.WriteLine(page.TextContent);
                     writer.WriteLine();
                 }

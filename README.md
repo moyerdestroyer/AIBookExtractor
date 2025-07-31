@@ -11,11 +11,6 @@ AI Book Extractor is a .NET application built with Avalonia UI framework that al
 - Support for resuming interrupted processing
 - AI-assisted text processing capabilities
 
-## Requirements
-
-- .NET 8.0 or higher
-- Operating System: Windows, macOS, or Linux (cross-platform support through Avalonia)
-
 ## Building the Project
 
 1. Clone the repository
@@ -26,3 +21,10 @@ AI Book Extractor is a .NET application built with Avalonia UI framework that al
 dotnet restore
 dotnet build
 ```
+
+![Book Extractor Preview](AIBookExtractor_preview.png "Book Extractor Preview")
+
+## Future Features
+- Set default AI to use
+- Fully Implement AI calls
+- Adjust Save Location

@@ -11,6 +11,7 @@
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="11.3.2"/>
         <PackageReference Include="Avalonia.Desktop" Version="11.3.2"/>
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.2" />
         <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.2"/>
         <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.2"/>
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
@@ -20,6 +21,8 @@
         </PackageReference>
         <PackageReference Include="PdfiumViewer" Version="2.13.0" />
         <PackageReference Include="PDFtoImage" Version="5.1.1" />
+        <PackageReference Include="ReactiveUI" Version="20.4.1" />
+        <PackageReference Include="System.Reactive" Version="6.0.1" />
     </ItemGroup>
 
     <ItemGroup>
@@ -27,5 +30,12 @@
         <None Update="assets\sample.jpg">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\Dialogs\ProgressDialog.axaml.cs">
+        <DependentUpon>ProgressDialog.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 </Project>
